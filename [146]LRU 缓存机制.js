@@ -56,60 +56,61 @@
 
 
 //leetcode submit region begin(Prohibit modification and deletion)
-function doublyLinkedList (key = null, value = null) {
-    this.key = key
-    this.val = value
-    this.prev = null
-    this.next = null
-}
-
-var LRUCache = function(capacity = 0) {
-    // 哈希表和头尾两个空结点的双向链表
-    this.hashmap = {}
-    this.capacity = capacity
-    this.sen = new doublyLinkedList()
-    this.tail = new doublyLinkedList()
-    this.sen.next = this.tail
-    this.tail.prev = this.sen
-};
-
-LRUCache.prototype.get = function(key) {
-    console.log('get:', this.hashmap.keys)
-    if (key in this.hashmap) {
-        this.moveToTail(key)
-        return this.hashmap[key].val
+class DoublyLinkedList {
+    constructor (key = null, value = null) {
+        this.key = key
+        this.val = value
+        this.prev = null
+        this.next = null
     }
-    return -1
-};
-
-LRUCache.prototype.moveToTail = function (key) {
-    let node = this.hashmap[key]
-    node.prev.next = node.next
-    node.next.prev = node.prev
-    this.tail.prev.next = node
-    node.prev = this.tail.prev
-    node.next = this.tail
-    this.tail.prev = node
 }
 
-LRUCache.prototype.put = function(key, value) {
-    if (key in this.hashmap) {
-        this.hashmap[key].val = value
-        this.moveToTail(key)
-    } else {
-        if (this.hashmap.length === this.capacity) {
-            delete this.hashmap[this.sen.next.key]
-            this.sen.next = this.sen.next.next
-            this.sen.next.prev = this.sen
-        }
-        let node = new doublyLinkedList(key, value)
+let LRUCache = class {
+    constructor(capacity = 0) {
+        // 哈希表和头尾两个空结点的双向链表
+        this.hashmap = new Map()
+        this.capacity = capacity
+        this.sen = new DoublyLinkedList()
+        this.tail = new DoublyLinkedList()
+        this.sen.next = this.tail
+        this.tail.prev = this.sen
+    }
+
+    moveToTail(key) {
+        let node = this.hashmap.get(key)
+        node.prev.next = node.next
+        node.next.prev = node.prev
         this.tail.prev.next = node
         node.prev = this.tail.prev
         node.next = this.tail
         this.tail.prev = node
-        this.hashmap[key] = node
     }
-    console.log('put:', this.hashmap.keys)
-};
 
+    get(key) {
+        if (this.hashmap.has(key)) {
+            this.moveToTail(key)
+            return (this.hashmap.get(key)).val
+        }
+        return -1
+    }
+
+    put(key, value) {
+        if (this.hashmap.has(key)) {
+            (this.hashmap.get(key)).val = value
+            this.moveToTail(key)
+        } else {
+            if (this.hashmap.size === this.capacity) {
+                this.hashmap.delete(this.sen.next.key)
+                this.sen.next = this.sen.next.next
+                this.sen.next.prev = this.sen
+            }
+            let node = new DoublyLinkedList(key, value)
+            this.tail.prev.next = node
+            node.prev = this.tail.prev
+            node.next = this.tail
+            this.tail.prev = node
+            this.hashmap.set(key, node)
+        }
+    }
+}
 //leetcode submit region end(Prohibit modification and deletion)
