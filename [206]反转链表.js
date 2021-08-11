@@ -22,17 +22,34 @@
  * @param {ListNode} head
  * @return {ListNode}
  */
+// 迭代
 var reverseList = function(head) {
     if (!head || !head.next) {
         return head
     }
-    let left = null, cur = head, right
+    let p = null, cur = head, q
     while (cur) {
-        right = cur.next
-        cur.next = left
-        left = cur
-        cur = right
+        q = cur.next
+        cur.next = p
+        p = cur
+        cur = q
     }
-    return left
+    return p
 };
+
+// 递归
+var reverseList1 = function(head) {
+    if (!head || !head.next) {
+        return head
+    }
+    return loop(null, head)
+}
+function loop(p, q) {
+    if (!q) {
+        return p
+    }
+    let tmp = q.next
+    q.next = p
+    return loop(q, tmp)
+}
 //leetcode submit region end(Prohibit modification and deletion)
